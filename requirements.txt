@@ -2,7 +2,7 @@
 # For a normal editable install, prefer: pip install -e ".[asr]"
 funasr==1.4.2
 torch==2.9.1
-torchaudio==2.9.1
+torchaudio==2.11.0
 PyYAML>=6.0,<7
 soundfile>=0.12,<1
 scikit-learn>=1.4,<2
