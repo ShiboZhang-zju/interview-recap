@@ -1,0 +1,61 @@
+project:
+  input_dir: input
+  work_audio_dir: work/audio
+  raw_dir: transcripts/raw
+  structured_dir: transcripts/structured
+  reports_dir: reports
+
+audio:
+  sample_rate: 16000
+  channels: 1
+  codec: pcm_s16le
+  # Conservative cleanup for interview speech. Set filters: [] to disable.
+  filters:
+    - highpass=f=60
+    - loudnorm=I=-20:TP=-2:LRA=11
+
+models:
+  hub: ms
+  device: cpu
+  # After the first successful download, pass local snapshot paths to FunASR
+  # so transient hub/network failures do not prevent offline inference.
+  prefer_local_cache: true
+  # ModelScope Hub defaults to one stream even though it supports range downloads.
+  download_workers: 8
+  download_part_size_mb: 64
+  download_parallel_threshold_mb: 50
+  asr: paraformer-zh
+  vad: fsmn-vad
+  # Compact official punctuation model (~291 MB instead of the ~1.1 GB full model).
+  punctuation: ct-punc-c
+  speaker: cam++
+  vad_max_segment_ms: 30000
+
+inference:
+  batch_size_s: 60
+  batch_size_threshold_s: 30
+  merge_vad: true
+  merge_length_s: 15
+  # Most interviews have two people. Set to null when the number is unknown.
+  speaker_count: 2
+  hotwords_file: knowledge/hotwords.txt
+
+knowledge:
+  normalization_file: knowledge/normalization.yaml
+  topics_file: knowledge/topics.yaml
+
+qa:
+  topic_similarity_threshold: 0.25
+  minimum_question_score: 1
+  # FunASR sentence_info is punctuation-level, so contiguous segments from
+  # the same speaker are joined into one logical turn before Q&A segmentation.
+  speaker_turn_gap_seconds: 0.8
+
+# V2 is a derived, deterministic conversation-structure repair stage. It does
+# not alter FunASR output or the V1 structured transcript.
+conversation_v2:
+  long_segment_seconds: 12.0
+  extreme_segment_seconds: 25.0
+  minimum_long_text_density: 0.5
+  turn_gap_seconds: 1.2
+  coding_silence_min_seconds: 8.0

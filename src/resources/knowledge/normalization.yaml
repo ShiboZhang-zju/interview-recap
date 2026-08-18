@@ -1,0 +1,34 @@
+replacements:
+  redis: Redis
+  red is: Redis
+  瑞迪斯: Redis
+  mysql: MySQL
+  my sql: MySQL
+  postgresql: PostgreSQL
+  postgres: PostgreSQL
+  mongodb: MongoDB
+  mongo db: MongoDB
+  kafka: Kafka
+  kubernetes: Kubernetes
+  k8s: Kubernetes
+  docker: Docker
+  python: Python
+  java: Java
+  golang: Go
+  grpc: gRPC
+  http: HTTP
+  https: HTTPS
+  tcp: TCP
+  udp: UDP
+  rpc: RPC
+  jvm: JVM
+  aof: AOF
+  rdb: RDB
+  mvcc: MVCC
+  raft: Raft
+  pytorch: PyTorch
+  transformer: Transformer
+  rag: RAG
+  b+树: B+ 树
+  b 加树: B+ 树
+  c plus plus: C++

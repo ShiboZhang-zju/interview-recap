@@ -1,0 +1,23 @@
+name: Feature request
+description: Propose a privacy-preserving improvement.
+title: "[Feature]: "
+labels: [enhancement]
+body:
+  - type: textarea
+    attributes:
+      label: Problem
+      description: What workflow or structure problem should be solved?
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Proposed behavior
+      description: Describe the desired input, output, and privacy boundary.
+    validations:
+      required: true
+  - type: checkboxes
+    attributes:
+      label: Privacy
+      options:
+        - label: This request does not include real recordings, transcripts, or personal information.
+          required: true

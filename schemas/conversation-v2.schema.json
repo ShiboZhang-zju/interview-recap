@@ -1,0 +1,326 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/ShiboZhang-zju/interview-recap/main/schemas/conversation-v2.schema.json",
+  "title": "Interview Recap Conversation Structure V2",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "conversation_structure",
+    "segments",
+    "phase_spans",
+    "events",
+    "question_tree",
+    "statistics"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "0.2.0"
+    },
+    "created_at": {
+      "type": "string"
+    },
+    "source_audio": {
+      "type": ["string", "null"]
+    },
+    "audio": {
+      "type": ["object", "null"]
+    },
+    "conversation_structure": {
+      "type": "object",
+      "required": [
+        "version",
+        "method",
+        "speaker_diarization_is_weak_evidence",
+        "valid_roles",
+        "valid_phases"
+      ],
+      "properties": {
+        "version": { "const": "V2" },
+        "method": { "type": "string" },
+        "speaker_diarization_is_weak_evidence": { "const": true },
+        "valid_roles": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/role" }
+        },
+        "valid_phases": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/phase" }
+        }
+      },
+      "additionalProperties": true
+    },
+    "speakers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "dominant_role", "role_confidence"],
+        "properties": {
+          "id": { "type": "string" },
+          "dominant_role": { "$ref": "#/$defs/role" },
+          "role_confidence": { "$ref": "#/$defs/confidence" },
+          "role_counts": { "type": "object" }
+        },
+        "additionalProperties": true
+      }
+    },
+    "segments": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/segment" }
+    },
+    "phase_spans": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["phase", "start", "end", "segment_ids"],
+        "properties": {
+          "phase": { "$ref": "#/$defs/phase" },
+          "start": { "$ref": "#/$defs/time" },
+          "end": { "$ref": "#/$defs/time" },
+          "segment_ids": { "$ref": "#/$defs/segment_ids" }
+        },
+        "additionalProperties": true
+      }
+    },
+    "events": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "event_type",
+          "phase",
+          "start",
+          "end",
+          "duration_seconds",
+          "segment_ids"
+        ],
+        "properties": {
+          "id": { "type": "string" },
+          "event_type": {
+            "enum": ["coding_silence", "coding_low_speech_density", "coding_noise"]
+          },
+          "phase": { "$ref": "#/$defs/phase" },
+          "start": { "$ref": "#/$defs/time" },
+          "end": { "$ref": "#/$defs/time" },
+          "duration_seconds": { "$ref": "#/$defs/time" },
+          "segment_ids": { "$ref": "#/$defs/segment_ids" },
+          "reasons": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "turns": {
+      "type": "array",
+      "items": { "type": "object" }
+    },
+    "question_tree": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/question_node" }
+    },
+    "qa_pairs": {
+      "type": "array",
+      "items": { "type": "object" }
+    },
+    "statistics": {
+      "type": "object",
+      "required": [
+        "raw_segment_count",
+        "valid_segment_count",
+        "invalid_segment_count",
+        "v1_qa_count",
+        "qa_count",
+        "question_count",
+        "main_question_count",
+        "follow_up_count",
+        "clarification_count",
+        "coding_event_count",
+        "unknown_role_count",
+        "role_correction_count"
+      ],
+      "properties": {
+        "raw_segment_count": { "$ref": "#/$defs/count" },
+        "valid_segment_count": { "$ref": "#/$defs/count" },
+        "invalid_segment_count": { "$ref": "#/$defs/count" },
+        "v1_qa_count": { "$ref": "#/$defs/count" },
+        "qa_count": { "$ref": "#/$defs/count" },
+        "question_count": { "$ref": "#/$defs/count" },
+        "main_question_count": { "$ref": "#/$defs/count" },
+        "follow_up_count": { "$ref": "#/$defs/count" },
+        "clarification_count": { "$ref": "#/$defs/count" },
+        "topic_switch_count": { "$ref": "#/$defs/count" },
+        "coding_silence_event_count": { "$ref": "#/$defs/count" },
+        "coding_event_count": { "$ref": "#/$defs/count" },
+        "unknown_role_count": { "$ref": "#/$defs/count" },
+        "valid_unknown_role_count": { "$ref": "#/$defs/count" },
+        "role_correction_count": { "$ref": "#/$defs/count" },
+        "cleanup_reason_counts": { "type": "object" }
+      },
+      "additionalProperties": true
+    }
+  },
+  "$defs": {
+    "time": {
+      "type": "number",
+      "minimum": 0
+    },
+    "count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "confidence": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "role": {
+      "enum": ["interviewer", "candidate", "unknown"]
+    },
+    "phase": {
+      "enum": [
+        "INTRO",
+        "PROJECT",
+        "TECH_QA",
+        "CODING",
+        "CODING_DISCUSSION",
+        "BEHAVIORAL",
+        "CANDIDATE_QUESTIONS",
+        "END",
+        "UNKNOWN"
+      ]
+    },
+    "segment_ids": {
+      "type": "array",
+      "items": { "type": "string" },
+      "uniqueItems": true
+    },
+    "cleanup": {
+      "type": "object",
+      "required": [
+        "valid",
+        "reasons",
+        "duration_seconds",
+        "meaningful_char_count",
+        "text_density",
+        "question_strength"
+      ],
+      "properties": {
+        "valid": { "type": "boolean" },
+        "reasons": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "duration_seconds": { "$ref": "#/$defs/time" },
+        "meaningful_char_count": { "$ref": "#/$defs/count" },
+        "text_density": { "$ref": "#/$defs/time" },
+        "question_strength": { "$ref": "#/$defs/time" }
+      },
+      "additionalProperties": true
+    },
+    "segment": {
+      "type": "object",
+      "required": [
+        "id",
+        "start",
+        "end",
+        "speaker_id",
+        "role",
+        "role_confidence",
+        "phase",
+        "text",
+        "cleanup"
+      ],
+      "properties": {
+        "id": { "type": "string" },
+        "start": { "$ref": "#/$defs/time" },
+        "end": { "$ref": "#/$defs/time" },
+        "speaker": { "type": "string" },
+        "speaker_id": { "type": "string" },
+        "role": { "$ref": "#/$defs/role" },
+        "role_confidence": { "$ref": "#/$defs/confidence" },
+        "phase": { "$ref": "#/$defs/phase" },
+        "text": { "type": "string" },
+        "cleanup": { "$ref": "#/$defs/cleanup" }
+      },
+      "additionalProperties": true
+    },
+    "answer": {
+      "type": "object",
+      "required": [
+        "role",
+        "role_confidence",
+        "start",
+        "end",
+        "speaker_ids",
+        "segment_ids",
+        "text"
+      ],
+      "properties": {
+        "role": { "$ref": "#/$defs/role" },
+        "role_confidence": { "$ref": "#/$defs/confidence" },
+        "start": { "$ref": "#/$defs/time" },
+        "end": { "$ref": "#/$defs/time" },
+        "speaker_ids": {
+          "type": "array",
+          "items": { "type": "string" },
+          "uniqueItems": true
+        },
+        "segment_ids": { "$ref": "#/$defs/segment_ids" },
+        "text": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
+    "question_node": {
+      "type": "object",
+      "required": [
+        "id",
+        "node_type",
+        "relation_to_previous",
+        "asked_by",
+        "role_confidence",
+        "phase",
+        "start",
+        "end",
+        "speaker_ids",
+        "segment_ids",
+        "text",
+        "answers",
+        "children"
+      ],
+      "properties": {
+        "id": { "type": "string" },
+        "node_type": {
+          "enum": ["main_question", "follow_up", "clarification"]
+        },
+        "relation_to_previous": {
+          "enum": ["first_question", "same_topic", "topic_switch"]
+        },
+        "asked_by": { "$ref": "#/$defs/role" },
+        "role_confidence": { "$ref": "#/$defs/confidence" },
+        "phase": { "$ref": "#/$defs/phase" },
+        "start": { "$ref": "#/$defs/time" },
+        "end": { "$ref": "#/$defs/time" },
+        "speaker_ids": {
+          "type": "array",
+          "items": { "type": "string" },
+          "uniqueItems": true
+        },
+        "segment_ids": { "$ref": "#/$defs/segment_ids" },
+        "text": { "type": "string" },
+        "topic": { "type": "object" },
+        "answers": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/answer" }
+        },
+        "children": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/question_node" }
+        }
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true
+}

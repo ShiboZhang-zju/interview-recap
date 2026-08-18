@@ -1,0 +1,33 @@
+name: Bug report
+description: Report a reproducible problem using synthetic or fully sanitized data.
+title: "[Bug]: "
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Do not attach a real interview recording or transcript. Use a minimal synthetic reproduction.
+  - type: checkboxes
+    attributes:
+      label: Privacy confirmation
+      options:
+        - label: I removed recordings, personal information, credentials, and proprietary interview content.
+          required: true
+  - type: textarea
+    attributes:
+      label: What happened?
+      description: Include the command, expected behavior, and actual behavior.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Synthetic reproduction
+      description: Provide the smallest sanitized segment or JSON fixture that reproduces the issue.
+    validations:
+      required: true
+  - type: input
+    attributes:
+      label: Environment
+      description: Operating system, Python version, and installation method.
+    validations:
+      required: true

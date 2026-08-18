@@ -1,0 +1,76 @@
+[build-system]
+requires = ["setuptools>=77.0.3", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "interview-recap"
+version = "0.1.0"
+description = "Privacy-first local interview transcription and conversation structure repair"
+readme = "README.md"
+requires-python = ">=3.10,<3.13"
+license = "Apache-2.0"
+license-files = ["LICENSE"]
+keywords = [
+  "interview",
+  "speech-recognition",
+  "speaker-diarization",
+  "funasr",
+  "privacy",
+  "nlp",
+]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Environment :: Console",
+  "Intended Audience :: Developers",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: Multimedia :: Sound/Audio :: Speech",
+  "Topic :: Text Processing :: Linguistic",
+]
+dependencies = [
+  "PyYAML>=6.0,<7",
+]
+
+[project.optional-dependencies]
+asr = [
+  "funasr==1.4.2",
+  "torch==2.9.1",
+  "torchaudio==2.9.1",
+  "soundfile>=0.12,<1",
+  "scikit-learn>=1.4,<2",
+]
+dev = [
+  "build>=1.2,<2",
+  "jsonschema>=4.23,<5",
+]
+
+[project.scripts]
+interview-recap = "interview_recap.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/ShiboZhang-zju/interview-recap"
+Repository = "https://github.com/ShiboZhang-zju/interview-recap.git"
+Issues = "https://github.com/ShiboZhang-zju/interview-recap/issues"
+Changelog = "https://github.com/ShiboZhang-zju/interview-recap/blob/main/CHANGELOG.md"
+
+[tool.setuptools]
+packages = [
+  "interview_recap",
+  "interview_recap.resources",
+  "interview_recap.resources.knowledge",
+]
+package-dir = { interview_recap = "src", "interview_recap.resources" = "src/resources", "interview_recap.resources.knowledge" = "src/resources/knowledge" }
+
+[tool.setuptools.package-data]
+"interview_recap.resources" = ["*.yaml"]
+"interview_recap.resources.knowledge" = ["*.txt", "*.yaml"]
+
+[tool.coverage.run]
+branch = true
+source = ["src"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"

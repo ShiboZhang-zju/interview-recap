@@ -1,0 +1,51 @@
+project:
+  input_dir: input
+  work_audio_dir: work/audio
+  raw_dir: transcripts/raw
+  structured_dir: transcripts/structured
+  reports_dir: reports
+
+audio:
+  sample_rate: 16000
+  channels: 1
+  codec: pcm_s16le
+  filters:
+    - highpass=f=60
+    - loudnorm=I=-20:TP=-2:LRA=11
+
+models:
+  hub: ms
+  device: cpu
+  prefer_local_cache: true
+  download_workers: 8
+  download_part_size_mb: 64
+  download_parallel_threshold_mb: 50
+  asr: paraformer-zh
+  vad: fsmn-vad
+  punctuation: ct-punc-c
+  speaker: cam++
+  vad_max_segment_ms: 30000
+
+inference:
+  batch_size_s: 60
+  batch_size_threshold_s: 30
+  merge_vad: true
+  merge_length_s: 15
+  speaker_count: 2
+  hotwords_file: knowledge/hotwords.txt
+
+knowledge:
+  normalization_file: knowledge/normalization.yaml
+  topics_file: knowledge/topics.yaml
+
+qa:
+  topic_similarity_threshold: 0.25
+  minimum_question_score: 1
+  speaker_turn_gap_seconds: 0.8
+
+conversation_v2:
+  long_segment_seconds: 12.0
+  extreme_segment_seconds: 25.0
+  minimum_long_text_density: 0.5
+  turn_gap_seconds: 1.2
+  coding_silence_min_seconds: 8.0
