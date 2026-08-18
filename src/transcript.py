@@ -6,7 +6,7 @@ from pathlib import Path
 from typing import Any
 
 from .audio import probe_audio
-from .config import display_path, project_path
+from .config import project_path
 from .normalize import load_replacements, normalize_text
 
 

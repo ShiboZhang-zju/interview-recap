@@ -21,7 +21,7 @@ The following paths are treated as private local artifacts and are ignored by Gi
 
 The project cannot prevent a user from manually forcing ignored files into Git. Always inspect the staged diff before committing.
 
-The current core pipeline does not call a remote LLM. If remote analysis providers are added later, they must remain disabled by default, require explicit consent, avoid logging transcript content, and document exactly which fields leave the device.
+The default `none` provider does not call a remote LLM. Optional remote analysis remains disabled unless the user selects a remote provider and passes `--allow-remote`. Only a locally redacted Question Tree payload may leave the device; audio, raw output, full segments, source paths, and speaker IDs are excluded.
 
 ## Credentials
 

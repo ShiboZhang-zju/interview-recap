@@ -27,6 +27,15 @@ V2 conversation structure repair
   |
   v
 V2 JSON and Markdown
+  |
+  v
+Provider-neutral analysis (default: none)
+  |
+  +--> minimized + locally redacted Question Tree payload
+  +--> validated analysis JSON with evidence segment IDs
+  |
+  v
+Deterministic Markdown report
 ```
 
 ## Stage boundaries
@@ -61,7 +70,7 @@ The public V2 contract is described in `schemas/conversation-v2.schema.json`. Ad
 
 ## Optional semantic analysis
 
-Semantic interview scoring is intentionally outside the current core. A future layer should consume V2 JSON through a provider-neutral interface:
+Semantic interview scoring remains outside the deterministic core. The implemented analysis layer consumes V2 JSON through a provider-neutral interface:
 
 ```text
 V2 JSON
@@ -69,7 +78,11 @@ V2 JSON
   +--> local provider: local analysis JSON
   +--> remote provider: explicit opt-in + minimized/redacted request
 
-analysis JSON --> deterministic report renderer
+validated analysis JSON --> deterministic report renderer
 ```
 
-The model should return validated analysis JSON with question IDs and evidence segment IDs. It should not directly own the final report layout.
+The `none` provider performs no model call. Local Ollama and OpenAI-compatible providers share the same contract. A remote provider requires explicit consent, receives no audio or full transcript, and can only return analysis tied to known question IDs and evidence segment IDs. The provider never owns the final report layout.
+
+## Session runtime
+
+The full `run` command writes all private artifacts to `work/sessions/<session-id>/`. An atomic `manifest.json` records each stage as `pending`, `running`, `completed`, or `failed`, together with outputs and elapsed time. `--resume` reuses only completed stages whose outputs still exist; a changed source file is rejected. Independent stage commands retain their original output paths for backward compatibility.

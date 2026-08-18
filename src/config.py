@@ -47,7 +47,16 @@ def project_path(config: dict[str, Any], value: str | Path) -> Path:
 
 
 def ensure_project_dirs(config: dict[str, Any]) -> None:
-    for key in ("input_dir", "work_audio_dir", "raw_dir", "structured_dir", "reports_dir"):
+    for key in (
+        "input_dir",
+        "sessions_dir",
+        "work_audio_dir",
+        "raw_dir",
+        "structured_dir",
+        "reports_dir",
+    ):
+        if key not in config["project"]:
+            continue
         project_path(config, config["project"][key]).mkdir(parents=True, exist_ok=True)
 
 

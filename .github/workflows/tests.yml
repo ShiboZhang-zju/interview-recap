@@ -27,6 +27,8 @@ jobs:
         run: interview-recap --help
       - name: Compile modules
         run: python -m py_compile src/*.py
+      - name: Lint
+        run: python -m ruff check src tests
       - name: Run unit tests
         run: python -m unittest discover -s tests -v
 
@@ -42,3 +44,10 @@ jobs:
         run: python -m pip install build
       - name: Build wheel and source distribution
         run: python -m build
+      - name: Install wheel and run offline analysis smoke test
+        run: |
+          python -m pip install dist/*.whl
+          repository_root="$PWD"
+          cd "$(mktemp -d)"
+          interview-recap --version
+          interview-recap analyze "$repository_root/examples/synthetic_interview.v2.json" --provider none --output-dir /tmp/interview-recap-smoke

@@ -4,9 +4,10 @@ Interview recordings and transcripts can contain identity, employment, compensat
 
 ## Default guarantees
 
-- The core Python pipeline does not call a remote LLM.
+- The default `none` provider does not call an LLM.
 - ASR and conversation repair run locally.
 - Raw ASR output is preserved locally for auditability.
+- A full run stores private artifacts under an ignored per-interview session directory.
 - `input/`, `work/`, `transcripts/`, and `reports/` are ignored by Git.
 - Tests use synthetic text and do not upload artifacts.
 
@@ -20,7 +21,7 @@ The project cannot protect data that a user:
 - pastes into a public issue or external chat;
 - stores in a cloud-synchronized project directory;
 - includes in shell history, crash reports, or debug logs;
-- explicitly sends to a future remote analysis provider.
+- explicitly sends to a configured remote analysis provider.
 
 ## Safe operating guidance
 
@@ -31,12 +32,12 @@ The project cannot protect data that a user:
 5. Delete local artifacts according to your own retention policy.
 6. Verify exact quotations against the original recording.
 
-## Future remote providers
+## Optional analysis providers
 
-Any future remote provider must meet these requirements:
+The analysis layer supports `none`, local Ollama, and OpenAI-compatible endpoints. Remote execution is constrained as follows:
 
 - disabled by default;
-- explicit `allow_remote` consent;
+- explicit `--allow-remote` consent on each command;
 - no audio upload;
 - question-tree-only payload by default;
 - local redaction before transmission;
@@ -44,5 +45,9 @@ Any future remote provider must meet these requirements:
 - clear provider/model/request metadata in the analysis result;
 - documented provider retention and training implications;
 - a fully local alternative remains available.
+
+The minimized request contains question IDs, question text, associated answer text, phase/topic labels, and evidence segment IDs. It excludes the audio, full `segments` array, source path, speaker IDs, and raw FunASR output. The request content itself is not written to logs; only a SHA-256 fingerprint and category-level redaction counts are saved.
+
+Built-in redaction covers common credentials, email addresses, mainland China mobile numbers and identity-card patterns, and IPv4 addresses. Project-specific names or identifiers should be stored one per line in an ignored local file such as `work/redaction_terms.txt`, referenced by `analysis.redaction_terms_file`. Never put real private terms in the tracked `config.yaml`. Automated redaction cannot guarantee removal of every indirect identifier, proprietary term, or contextual clue.
 
 An external provider's privacy policy and retention behavior are outside this project's guarantees.

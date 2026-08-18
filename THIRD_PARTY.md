@@ -10,6 +10,8 @@ Primary upstream references:
 - [PyTorch](https://github.com/pytorch/pytorch)
 - [FFmpeg](https://ffmpeg.org/)
 - [ModelScope](https://modelscope.cn/)
+- [HTTPX](https://www.python-httpx.org/) (optional analysis transport)
+- [Ollama](https://ollama.com/) (optional local analysis runtime)
 - `iic/speech_seaco_paraformer_large_asr_nat-zh-cn-16k-common-vocab8404-pytorch`
 - `iic/speech_fsmn_vad_zh-cn-16k-common-pytorch`
 - `iic/punc_ct-transformer_zh-cn-common-vocab272727-pytorch`

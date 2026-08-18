@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "interview-recap"
-version = "0.1.0"
-description = "Privacy-first local interview transcription and conversation structure repair"
+version = "0.2.0.dev0"
+description = "Privacy-first interview transcription, conversation repair, and optional analysis"
 readme = "README.md"
 requires-python = ">=3.10,<3.13"
 license = "Apache-2.0"
@@ -35,15 +35,19 @@ dependencies = [
 
 [project.optional-dependencies]
 asr = [
-  "funasr==1.4.2",
-  "torch==2.9.1",
-  "torchaudio==2.9.1",
+  "funasr>=1.4.2,<1.5",
+  "torch>=2.2,<3",
+  "torchaudio>=2.2,<3",
   "soundfile>=0.12,<1",
   "scikit-learn>=1.4,<2",
+]
+analysis = [
+  "httpx>=0.27,<1",
 ]
 dev = [
   "build>=1.2,<2",
   "jsonschema>=4.23,<5",
+  "ruff>=0.9,<1",
 ]
 
 [project.scripts]

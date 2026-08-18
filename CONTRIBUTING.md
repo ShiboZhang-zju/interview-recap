@@ -36,7 +36,9 @@ FFmpeg and FFprobe are system dependencies and must be installed separately.
 - Keep `speaker_id` independent from conversation `role`.
 - Retain source `segment_ids` in every question and answer.
 - Keep the core pipeline local and deterministic.
-- Any future remote provider must be optional, disabled by default, and explicitly authorized.
+- Any remote provider must be optional, disabled by default, and explicitly authorized.
+- Keep analysis provider-neutral and validate every question/evidence ID before rendering.
+- Never send audio, raw output, full segments, source paths, or speaker IDs to a provider.
 - Do not hard-code rules for a particular company, recording, or timestamp.
 
 ## Tests
@@ -48,7 +50,7 @@ python -m py_compile src/*.py
 python -m unittest discover -s tests -v
 ```
 
-New cleanup, role, phase, or Question Tree behavior should include a synthetic regression test. Tests must not download model weights or call external services.
+New cleanup, role, phase, Question Tree, session-resume, redaction, or analysis behavior should include a synthetic regression test. Tests must not download model weights or call external services.
 
 ## Pull requests
 

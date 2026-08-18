@@ -1,5 +1,7 @@
 project:
   input_dir: input
+  # Full runs are isolated here with a resumable manifest and all private outputs.
+  sessions_dir: work/sessions
   work_audio_dir: work/audio
   raw_dir: transcripts/raw
   structured_dir: transcripts/structured
@@ -59,3 +61,24 @@ conversation_v2:
   minimum_long_text_density: 0.5
   turn_gap_seconds: 1.2
   coding_silence_min_seconds: 8.0
+
+# Semantic analysis is a final, optional layer. "none" never calls a model and
+# still renders a deterministic, traceable report from the V2 Question Tree.
+analysis:
+  provider: none
+  redact: true
+  # Put private names/terms in an ignored local file such as work/redaction_terms.txt.
+  redaction_terms_file: null
+  maximum_answer_chars: 2400
+  maximum_payload_chars: 160000
+  maximum_questions_per_request: 12
+  timeout_seconds: 120
+  connect_retries: 2
+  providers:
+    openai_compatible:
+      base_url: https://api.openai.com/v1
+      api_key_env: INTERVIEW_RECAP_API_KEY
+      model: null
+    ollama:
+      base_url: http://127.0.0.1:11434
+      model: null

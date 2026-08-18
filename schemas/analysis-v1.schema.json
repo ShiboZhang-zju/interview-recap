@@ -1,0 +1,164 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/ShiboZhang-zju/interview-recap/main/schemas/analysis-v1.schema.json",
+  "title": "Interview Recap Semantic Analysis V1",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "created_at",
+    "source",
+    "provider",
+    "privacy",
+    "overview",
+    "questions",
+    "review_plan",
+    "warnings"
+  ],
+  "properties": {
+    "schema_version": { "const": "0.1.0" },
+    "created_at": { "type": "string" },
+    "source": {
+      "type": "object",
+      "required": ["conversation_schema_version", "question_count", "request_count"],
+      "properties": {
+        "conversation_schema_version": { "const": "0.2.0" },
+        "question_count": { "type": "integer", "minimum": 0 },
+        "request_count": { "type": "integer", "minimum": 1 }
+      },
+      "additionalProperties": false
+    },
+    "provider": {
+      "type": "object",
+      "required": ["name", "model", "remote", "endpoint"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "model": { "type": ["string", "null"] },
+        "remote": { "type": "boolean" },
+        "endpoint": { "type": ["string", "null"] }
+      },
+      "additionalProperties": false
+    },
+    "privacy": {
+      "type": "object",
+      "required": [
+        "remote_consent",
+        "redaction_enabled",
+        "redaction_counts",
+        "sent_audio",
+        "sent_full_transcript",
+        "payload_scope",
+        "request_sha256"
+      ],
+      "properties": {
+        "remote_consent": { "type": "boolean" },
+        "redaction_enabled": { "type": "boolean" },
+        "redaction_counts": {
+          "type": "object",
+          "additionalProperties": { "type": "integer", "minimum": 0 }
+        },
+        "sent_audio": { "const": false },
+        "sent_full_transcript": { "const": false },
+        "payload_scope": { "const": "question_tree_only" },
+        "request_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "additionalProperties": false
+    },
+    "overview": { "$ref": "#/$defs/overview" },
+    "questions": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/question_analysis" }
+    },
+    "review_plan": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["priority", "topic", "action", "question_ids"],
+        "properties": {
+          "priority": { "type": "string" },
+          "topic": { "type": "string" },
+          "action": { "type": "string" },
+          "question_ids": {
+            "type": "array",
+            "items": { "type": "string" },
+            "uniqueItems": true
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "warnings": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  },
+  "$defs": {
+    "status": {
+      "enum": ["evaluated", "not_evaluated"]
+    },
+    "string_array": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "overview": {
+      "type": "object",
+      "required": ["assessment_status", "summary", "strengths", "risks", "suggested_focus"],
+      "properties": {
+        "assessment_status": { "$ref": "#/$defs/status" },
+        "summary": { "type": "string" },
+        "strengths": { "$ref": "#/$defs/string_array" },
+        "risks": { "$ref": "#/$defs/string_array" },
+        "suggested_focus": { "$ref": "#/$defs/string_array" }
+      },
+      "additionalProperties": false
+    },
+    "score": {
+      "type": ["integer", "null"],
+      "minimum": 1,
+      "maximum": 5
+    },
+    "question_analysis": {
+      "type": "object",
+      "required": [
+        "question_id",
+        "assessment_status",
+        "summary",
+        "scores",
+        "strengths",
+        "risks",
+        "suggestions",
+        "improved_answer",
+        "evidence_segment_ids"
+      ],
+      "properties": {
+        "question_id": { "type": "string" },
+        "assessment_status": { "$ref": "#/$defs/status" },
+        "summary": { "type": "string" },
+        "scores": {
+          "type": "object",
+          "required": ["relevance", "technical_depth", "clarity", "structure"],
+          "properties": {
+            "relevance": { "$ref": "#/$defs/score" },
+            "technical_depth": { "$ref": "#/$defs/score" },
+            "clarity": { "$ref": "#/$defs/score" },
+            "structure": { "$ref": "#/$defs/score" }
+          },
+          "additionalProperties": false
+        },
+        "strengths": { "$ref": "#/$defs/string_array" },
+        "risks": { "$ref": "#/$defs/string_array" },
+        "suggestions": { "$ref": "#/$defs/string_array" },
+        "improved_answer": { "type": ["string", "null"] },
+        "evidence_segment_ids": {
+          "type": "array",
+          "items": { "type": "string" },
+          "uniqueItems": true
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}
