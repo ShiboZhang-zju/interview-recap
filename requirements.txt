@@ -1,6 +1,6 @@
 # Reproducible ASR environment validated on macOS arm64 and Python 3.11.
 # For a normal editable install, prefer: pip install -e ".[asr]"
-funasr==1.4.2
+funasr==1.4.7
 torch==2.9.1
 torchaudio==2.9.1
 PyYAML>=6.0,<7
